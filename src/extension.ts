@@ -1,27 +1,28 @@
 
 import * as vscode from 'vscode';
-/**
- * Интерфейс одной задачи.
- * Содержит название задачи и информацию о её выполнении.
+
+/*
+  Интерфейс одной задачи.
+  Содержит название задачи и информацию о её выполнении.
  */
 interface Task {
     name: string;
     completed: boolean;
 }
-/**
- * Основная функция активации расширения.
- * Регистрирует команды, создаёт Webview и настраивает обработчики событий.
- *
- * @param context контекст расширения VS Code
+/*
+  Основная функция активации расширения.
+  Регистрирует команды, создаёт Webview и настраивает обработчики событий.
+ 
+  @param context контекст расширения VS Code
  */
 export function activate(context: vscode.ExtensionContext) {
     console.log('Планер задач активирован');
-    /**
-     * Получает список задач из глобального хранилища VS Code.
-     * Если задача сохранена в старом формате (строка),
-     * преобразует её в объект Task.
-     *
-     * @returns массив задач
+    /*
+      Получает список задач из глобального хранилища VS Code.
+      Если задача сохранена в старом формате (строка),
+      преобразует её в объект Task.
+     
+      @returns массив задач
      */
     const getTasks = (): Task[] => {
         const savedTasks = context.globalState.get<(string | Task)[]>('tasks', []);
@@ -37,12 +38,12 @@ export function activate(context: vscode.ExtensionContext) {
     };
     // Ссылка на открытое представление Webview.
     let tasksView: vscode.WebviewView | undefined;
-    /**
-     * Экранирует специальные HTML-символы.
-     * Это позволяет безопасно отображать названия задач в HTML.
-     *
-     * @param text исходный текст
-     * @returns текст с заменёнными HTML-символами
+    /*
+      Экранирует специальные HTML-символы.
+      Это позволяет безопасно отображать названия задач в HTML.
+     
+      @param text исходный текст
+      @returns текст с заменёнными HTML-символами
      */
     const escapeHtml = (text: string): string => {
         return text
@@ -52,10 +53,10 @@ export function activate(context: vscode.ExtensionContext) {
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#039;');
     };
-    /**
-     * Обновляет содержимое боковой панели.
-     * Получает актуальный список задач и формирует HTML-интерфейс.
-     * Если Webview не открыт, обновление не выполняется.
+    /*
+      Обновляет содержимое боковой панели.
+      Получает актуальный список задач и формирует HTML-интерфейс.
+      Если Webview не открыт, обновление не выполняется.
      */
     const updateTasksView = () => {
         if (!tasksView) {
@@ -168,15 +169,15 @@ export function activate(context: vscode.ExtensionContext) {
             </html>
         `;
     };
-    /**
-     * Провайдер представления задач.
-     * Настраивает Webview и обрабатывает сообщения от интерфейса.
+    /*
+      Провайдер представления задач.
+      Настраивает Webview и обрабатывает сообщения от интерфейса.
      */
     const provider: vscode.WebviewViewProvider = {
-        /**
-         * Вызывается VS Code при создании представления Webview.
-         *
-         * @param webviewView объект представления Webview
+        /*
+          Вызывается VS Code при создании представления Webview.
+         
+          @param webviewView объект представления Webview
          */
         resolveWebviewView(webviewView) {
             tasksView = webviewView;
@@ -184,10 +185,10 @@ export function activate(context: vscode.ExtensionContext) {
             webviewView.webview.options = {
                 enableScripts: true
             };
-            /**
-             * Обрабатывает сообщения, полученные от Webview.
-             * Изменяет статус задачи или удаляет её.
-             * После изменения сохраняет список и обновляет интерфейс.
+            /*
+              Обрабатывает сообщения, полученные от Webview.
+              Изменяет статус задачи или удаляет её.
+              После изменения сохраняет список и обновляет интерфейс.
              */
             webviewView.webview.onDidReceiveMessage(async message => {
                 const tasks = getTasks();
@@ -227,9 +228,9 @@ export function activate(context: vscode.ExtensionContext) {
             provider
         )
     );
-    /**
-     * Команда добавления новой задачи.
-     * Запрашивает название, добавляет задачу в список и сохраняет изменения.
+    /*
+      Команда добавления новой задачи.
+      Запрашивает название, добавляет задачу в список и сохраняет изменения.
      */
     const disposable = vscode.commands.registerCommand('planner.addTask', async () => {
         const task = await vscode.window.showInputBox({
@@ -247,9 +248,9 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
     context.subscriptions.push(disposable);
-    /**
-     * Команда просмотра списка задач.
-     * Показывает названия задач и их текущий статус.
+    /*
+      Команда просмотра списка задач.
+      Показывает названия задач и их текущий статус.
      */
     const showTasks = vscode.commands.registerCommand('planner.showTasks', () => {
         const tasks = getTasks();
@@ -263,10 +264,10 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(message);
     });
     context.subscriptions.push(showTasks);
-    /**
-     * Команда удаления задачи.
-     * Предлагает пользователю выбрать задачу из списка,
-     * удаляет её и сохраняет изменения.
+    /*
+      Команда удаления задачи.
+      Предлагает пользователю выбрать задачу из списка,
+      удаляет её и сохраняет изменения.
      */
     const deleteTask = vscode.commands.registerCommand('planner.deleteTask', async () => {
         const tasks = getTasks();
@@ -293,9 +294,9 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
     context.subscriptions.push(deleteTask);
-    /**
-     * Команда отметки задачи как выполненной.
-     * Предлагает выбрать задачу, меняет её статус и сохраняет изменения.
+    /*
+      Команда отметки задачи как выполненной.
+      Предлагает выбрать задачу, меняет её статус и сохраняет изменения.
      */
     const completeTask = vscode.commands.registerCommand('planner.completeTask', async () => {
         const tasks = getTasks();
@@ -327,8 +328,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(completeTask);
 }
-/**
- * Функция деактивации расширения.
- * Дополнительные действия при завершении работы не требуются.
+/*
+  Функция деактивации расширения.
+  Дополнительные действия при завершении работы не требуются.
  */
 export function deactivate() {}
