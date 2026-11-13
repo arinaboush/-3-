@@ -24,7 +24,7 @@ Task Planner — это расширение для Visual Studio Code, пред
 ### Установка
 1. Клонировать репозиторий:
    ```bash
-   git clone <repository-url>
+   git clone <https://github.com/arinaboush/-3-.git>
    ```
 2. Перейти в директорию проекта:
    ```bash
