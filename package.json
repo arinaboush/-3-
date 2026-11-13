@@ -1,0 +1,72 @@
+
+{
+  "name": "planner",
+  "displayName": "Планер задач",
+  "description": "Отслеживание выполнения задач",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.145.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:planner.addTask",
+    "onCommand:planner.showTasks",
+    "onCommand:planner.deleteTask",
+    "onCommand:planner.completeTask",
+    "onView:planner.tasksView"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "planner.addTask",
+        "title": "Добавить задачу"
+      },
+      {
+        "command": "planner.showTasks",
+        "title": "Показать задачи"
+      },
+      {
+        "command": "planner.deleteTask",
+        "title": "Удалить задачу"
+      },
+      {
+        "command": "planner.completeTask",
+        "title": "Отметить задачу выполненной"
+      }
+    ],
+    "views": {
+        "explorer": [
+            {
+                "type": "webview",
+                "id": "planner.tasksView",
+                "name": "Мой планер"
+            }
+        ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.14.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "24.x",
+    "typescript-eslint": "^8.61.1",
+    "eslint": "^10.5.0",
+    "typescript": "^6.0.3",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.0.0"
+  },
+  "overrides": {
+    "diff": "^8.0.4",
+    "serialize-javascript": "^7.0.6"
+  }
+}
